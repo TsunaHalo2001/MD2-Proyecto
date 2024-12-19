@@ -35,13 +35,18 @@ class Controlador:
             return
 
     def check_grafo(self):
+        self.mostrar_grafo()
+        self.estado = 0
+        
         self.vista.mostrar_mensaje("Grafo ingresado correctamente.")
         if self.modelo.get_circuito_euleriano():
             self.vista.mostrar_mensaje("El grafo tiene un circuito euleriano.")
         elif self.modelo.get_camino_euleriano() or self.modelo.get_circuito_euleriano():
             self.vista.mostrar_mensaje("El grafo tiene un camino euleriano.")
-        self.mostrar_grafo()
-        self.estado = 0
+        if self.modelo.get_circuito_hamiltoniano():
+            self.vista.mostrar_mensaje("El grafo tiene un circuito hamiltoniano.")
+        elif self.modelo.get_camino_hamiltoniano():
+            self.vista.mostrar_mensaje("El grafo tiene un camino hamiltoniano.")
 
     def mostrar_grafo(self):
         self.modelo.preparar_grafo()
