@@ -8,7 +8,7 @@ def main():
     modelo = Modelo()
     vista = Vista()
     controlador = Controlador(modelo, vista)
-    while controlador.estado >= 0:
+    while controlador.modelo.estado >= 0:
         controlador.main()
 
 if __name__ == "__main__":

@@ -9,6 +9,12 @@ class Modelo:
         self.grafo = defaultdict(list)
         self.num_vertices = 0
         self.num_aristas = 0
+        self.estado = 0
+
+        self.V = 0
+        self.T = 0
+        self.S = 0
+        self.P = 0
 
     def agregar_arista(self, u, v):
         self.grafo[u].append(v)
@@ -89,4 +95,70 @@ class Modelo:
 
         if contador == self.num_vertices or (contador == self.num_vertices - 1 and contador1 == 1):
             return True
+        
+    def buscar_camino_mas_corto(self, u, v):
+        # Buscar el camino m?s corto entre dos vértices
+        try:
+            camino = nx.shortest_path(self.G, source=u, target=v)
+            return camino
+        except nx.NetworkXNoPath:
+            return False
+        
+    def generarCadena(self, cadena):
+        if not cadena:
+            return self.S == ''
+        cadenas = []
+
+        for i in range(len(self.P)):
+            no_terminal = self.P[i][0]
+            producciones = self.P[i][1:]
+            if no_terminal in cadena:
+                for produccion in producciones:
+                    nueva_cadena = cadena.replace(no_terminal, produccion, 1)
+                    cadenas.append(nueva_cadena)
+
+        return cadenas
+    
+    def generarVocabulario(self, n):
+        cadenas = [self.S]
+
+        for i in range(n):
+            for cadena in cadenas:
+                for i in range(len(self.P)):
+                    if self.P[i][0] in cadena:
+                        cadenas.remove(cadena)
+                cadenas_generadas = self.generarCadena(cadena)
+            cadenas += cadenas_generadas
+
+        return cadenas
+    
+    def perteneceLenguaje(self, cadena):
+        # Se determina la cantidad de iteraciones que se necesita para la cadena ingresada
+        iteraciones = 0
+
+        for i in range(len(self.P)):
+            for j in range(len(self.P[i])):
+                if self.P[i][0] in self.P[i][j]:
+                    continue
+                iteraciones = len(self.P[i][j]) * len(cadena)
+
+        # Se genera el vocabulario
+        vocabulario = self.generarVocabulario(iteraciones)
+        for i in vocabulario:
+            if i == cadena:
+                return True
+        
+        return False
+    
+    def reset(self):
+        self.G.clear()
+        self.grafo.clear()
+        self.num_vertices = 0
+        self.num_aristas = 0
+        self.estado = 0
+
+        self.V = 0
+        self.T = 0
+        self.S = 0
+        self.P = 0
             
